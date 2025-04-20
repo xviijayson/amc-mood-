@@ -1,0 +1,161 @@
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
+import { WebView } from 'react-native-webview';
+
+const moods = [
+  { title: 'HAPPY', image: 'https://i.imgur.com/5zOaN3O.jpg' },
+  { title: 'RELAXING', image: 'https://i.imgur.com/Jz5eV7J.jpg' },
+  { title: 'DREAMY', image: 'https://i.imgur.com/V6mM9Lk.jpg' },
+  { title: 'GLAMOROUS', image: 'https://i.imgur.com/yQ6F1C0.jpg' },
+  { title: 'ELEGANT', image: 'https://i.imgur.com/2V2T2Q1.jpg' },
+  { title: 'EPIC', image: 'https://i.imgur.com/1iHtbRg.jpg' },
+  { title: 'SAD', image: 'https://i.imgur.com/yZUMtMI.jpg' },
+  { title: 'SMOOTH', image: 'https://i.imgur.com/EarEw2U.jpg' },
+  { title: 'PLEASANTLY LIFTED', image: 'https://i.imgur.com/zHQV2An.jpg' },
+  { title: 'SEXY', image: 'https://i.imgur.com/Mb3mduC.jpg' }
+];
+
+const moodTracks = {
+  HAPPY: [
+    { title: "Happy – Pharrell Williams", embed: "https://open.spotify.com/embed/track/60nZcImufyMA1MKQY3dcCH" },
+    { title: "Good as Hell – Lizzo", embed: "https://open.spotify.com/embed/track/0k664IuFwVP557Gnx7RhIl" },
+    { title: "Can't Stop The Feeling – JT", embed: "https://open.spotify.com/embed/track/6JV2JOEocMgcZxYSZelKcc" },
+    { title: "Walking on Sunshine", embed: "https://open.spotify.com/embed/track/5qap5aO4i9A6vBBhASxkUJ" },
+    { title: "Uptown Funk", embed: "https://open.spotify.com/embed/track/32OlwWuMpZ6b0aN2RZOeMS" },
+  ],
+  RELAXING: [
+    { title: "Weightless – Marconi Union", embed: "https://open.spotify.com/embed/track/1d3HGsXmpOA2c7UuHBKpBd" },
+    { title: "Sunset Lover – Petit Biscuit", embed: "https://open.spotify.com/embed/track/7gTvuU5T2C7gFzLr6GZtMf" },
+    { title: "Night Owl – Galimatias", embed: "https://open.spotify.com/embed/track/4zZ7TYCwHVtF8xVvGpKWBx" },
+    { title: "Breezeblocks – Alt-J", embed: "https://open.spotify.com/embed/track/2s1sdSjwQHUTwKjM4lUZsJ" },
+    { title: "Riverside – Agnes Obel", embed: "https://open.spotify.com/embed/track/5DYXeJdDpMbF3GiV4XXyJd" },
+  ],
+  DREAMY: [
+    { title: "I'll Be Missing You", embed: "https://open.spotify.com/embed/track/7H6ev70Weq6DdpZyyTmUXk" },
+    { title: "Cold Little Heart", embed: "https://open.spotify.com/embed/track/3n3Ppam7vgaVa1iaRUc9Lp" },
+    { title: "Where Is My Mind", embed: "https://open.spotify.com/embed/track/2VxeLyX666F8uXCJ0dZF8B" },
+    { title: "Amber", embed: "https://open.spotify.com/embed/track/6XhvuErjQ4XNm6nDPVCxVX" },
+    { title: "In The Air Tonight", embed: "https://open.spotify.com/embed/track/18AXbzPzBS8Y3AkgSxzJPb" },
+  ],
+  // Add more moods with tracks as needed...
+};
+
+export default function App() {
+  const [selectedMood, setSelectedMood] = useState(null);
+
+  const renderTracks = () => {
+    const currentTracks = moodTracks[selectedMood] || [];
+
+    return (
+      <ScrollView style={styles.trackList}>
+        <Text style={styles.subtitle}>VIBES FOR A {selectedMood} MOOD</Text>
+        {currentTracks.map((track, index) => (
+          <View key={index} style={styles.trackContainer}>
+            <WebView
+              source={{ uri: track.embed }}
+              style={styles.webview}
+              javaScriptEnabled
+            />
+          </View>
+        ))}
+        <TouchableOpacity style={styles.button} onPress={() => setSelectedMood(null)}>
+          <Text style={styles.buttonText}>HOME</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    );
+  };
+
+  return (
+    <View style={styles.container}>
+      {!selectedMood ? (
+        <ScrollView>
+          <Text style={styles.header}>MOOD 🎧 TUNES</Text>
+          <Text style={styles.subtitle}>FEATURED MOODS</Text>
+          <View style={styles.moodGrid}>
+            {moods.map((mood, index) => (
+              <TouchableOpacity key={index} onPress={() => setSelectedMood(mood.title)} style={styles.moodBox}>
+                <Image source={{ uri: mood.image }} style={styles.moodImage} />
+                <Text style={styles.moodLabel}>{mood.title}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </ScrollView>
+      ) : renderTracks()}
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#0D0D0D',
+    paddingTop: 50,
+  },
+  header: {
+    fontSize: 32,
+    color: '#FF66CC',
+    textAlign: 'center',
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  subtitle: {
+    fontSize: 18,
+    color: '#fff',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  moodGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    paddingHorizontal: 10,
+  },
+  moodBox: {
+    width: 140,
+    margin: 10,
+    alignItems: 'center',
+    backgroundColor: '#1A1A1A',
+    borderRadius: 10,
+    padding: 5,
+    shadowColor: '#FF66CC',
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+  },
+  moodImage: {
+    width: 120,
+    height: 80,
+    borderRadius: 8,
+  },
+  moodLabel: {
+    color: '#fff',
+    fontWeight: 'bold',
+    marginTop: 5,
+  },
+  trackList: {
+    paddingHorizontal: 10,
+  },
+  trackContainer: {
+    height: 80,
+    marginBottom: 20,
+    borderRadius: 12,
+    overflow: 'hidden',
+    backgroundColor: '#1A1A1A',
+    shadowColor: '#FF66CC',
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+  },
+  webview: {
+    height: 80,
+  },
+  button: {
+    backgroundColor: '#FF66CC',
+    padding: 10,
+    borderRadius: 8,
+    margin: 20,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+});
